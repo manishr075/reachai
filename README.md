@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ReachAI
+
+ReachAI is a hackathon prototype for evidence-based, human-reviewed outbound. It uses fictional demo prospects and simulated dashboard metrics; none of the metrics are customer results.
+
+The campaign generator uses Strands with Amazon Bedrock in `ap-south-1` and the local `my-bedrock-profile`. It calls a local `get_prospect_context` tool before producing a structured email and two follow-ups. No outreach is sent automatically.
 
 ## Getting Started
 
-First, run the development server:
+Start the local development server:
 
 ```bash
 npm run dev
@@ -16,7 +20,7 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Choose **New campaign** to run the complete demo workflow.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
