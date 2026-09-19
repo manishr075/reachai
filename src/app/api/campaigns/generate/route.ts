@@ -23,8 +23,18 @@ export async function POST(request: Request) {
     const prompt = `Create a personalized outbound campaign for this prospect.\n\nProspect: ${JSON.stringify(prospect)}\nProduct: ${productDescription}\nTarget customer: ${targetCustomer}\n\nFirst call get_prospect_context using the prospect company. Then return JSON exactly in this shape:\n{"companySummary":"...","painPoint":"...","personalizationAngle":"...","whyThisMessage":["...","..."],"subject":"...","emailBody":"...","followups":[{"day":3,"subject":"...","body":"..."},{"day":7,"subject":"...","body":"..."}]}\nOnly use facts supplied by the prospect or tool. whyThisMessage must be concise evidence summaries, not hidden reasoning.`;
     const result = await createReachAIAgent().invoke(prompt);
     const campaign = campaignGenerationResultSchema.parse(extractJson(result.toString()));
-    return NextResponse.json({ success: true, campaign });
-  } catch {
+    return NextResponse.json({
+      success: true,
+      campaign,
+      toolUsed: (result.metrics?.toolUsage.get_prospect_context?.callCount ?? 0) > 0,
+    });
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      const details = error instanceof Error
+        ? { name: error.name, message: error.message }
+        : { name: "UnknownError", message: "Non-Error exception" };
+      console.error("ReachAI campaign generation failed", details);
+    }
     return NextResponse.json(
       { success: false, error: "We couldn't generate this outreach. Please confirm Bedrock access and try again." },
       { status: 500 },

@@ -35,7 +35,8 @@ const getProspectContextTool = new FunctionTool({
 export function createReachAIAgent() {
   const model = new BedrockModel({
     region: "ap-south-1",
-    modelId: "amazon.nova-micro-v1:0",
+    // Nova Micro in ap-south-1 must be invoked through the active APAC inference profile.
+    modelId: "apac.amazon.nova-micro-v1:0",
     maxTokens: 1800,
     temperature: 0.35,
     clientConfig: { credentials: fromIni({ profile: "my-bedrock-profile" }) },

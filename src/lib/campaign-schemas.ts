@@ -13,7 +13,8 @@ export const prospectSchema = z.object({
   name: z.string().min(1),
   company: z.string().min(1),
   role: z.string().min(1),
-  email: z.string().email(),
+  // An email is not needed to draft copy and is intentionally optional for demos.
+  email: z.string().email().optional(),
   industry: z.string().min(1).optional(),
   companyDescription: z.string().min(1).optional(),
   recentSignal: z.string().min(1).optional(),
