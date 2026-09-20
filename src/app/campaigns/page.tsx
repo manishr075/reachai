@@ -1,7 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import { Plus, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useCampaignSearch } from "@/components/app-shell"
 import { campaigns } from "@/lib/mock-data"
 
 const statusChip: Record<string, string> = {
@@ -21,6 +24,18 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 export default function CampaignsPage() {
   const nf = new Intl.NumberFormat("en-US")
+  const { searchQuery } = useCampaignSearch()
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const visibleCampaigns = campaigns.filter((campaign) => {
+    if (!normalizedQuery) return true
+    const campaignMatches = [campaign.name, campaign.audience, campaign.product]
+      .some((value) => value.toLowerCase().includes(normalizedQuery))
+    const prospectMatches = campaign.prospectList.some((prospect) =>
+      [prospect.name, prospect.company, prospect.role, prospect.industry]
+        .some((value) => value?.toLowerCase().includes(normalizedQuery)),
+    )
+    return campaignMatches || prospectMatches
+  })
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -38,7 +53,7 @@ export default function CampaignsPage() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {campaigns.map((c) => (
+        {visibleCampaigns.map((c) => (
           <Link key={c.id} href={`/campaigns/${c.id}`} className="group">
             <Card className="transition-colors group-hover:border-primary/40">
               <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -72,6 +87,14 @@ export default function CampaignsPage() {
             </Card>
           </Link>
         ))}
+        {visibleCampaigns.length === 0 && (
+          <div role="status" className="rounded-lg border border-dashed p-8 text-center">
+            <p className="font-medium">No matching campaigns or prospects</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Try a different prospect name, company, role, or industry.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

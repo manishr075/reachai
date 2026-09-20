@@ -22,7 +22,7 @@ export default function AnalyticsPage() {
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
         <p className="text-sm text-muted-foreground">
-          Simulated prototype metrics for the hackathon demo — not customer results.
+          Demo analytics · simulated data. These are not customer or production results.
         </p>
       </div>
 

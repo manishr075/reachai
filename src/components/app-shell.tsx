@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { createContext, useContext, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -22,12 +22,26 @@ import {
   InputGroupInput,
   InputGroupAddon,
 } from "@/components/ui/input-group"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const nav = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
   { label: "Campaigns", href: "/campaigns", icon: Megaphone },
   { label: "Analytics", href: "/analytics", icon: ChartLine },
 ]
+
+type CampaignSearchContextValue = {
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+}
+
+const CampaignSearchContext = createContext<CampaignSearchContextValue | null>(null)
+
+export function useCampaignSearch() {
+  const context = useContext(CampaignSearchContext)
+  if (!context) throw new Error("useCampaignSearch must be used inside AppShell")
+  return context
+}
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/"
@@ -84,17 +98,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
-      <div className="mx-3 mb-3 rounded-lg border bg-accent/40 p-3">
-        <p className="text-sm font-medium">AI credits</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          1,240 of 5,000 used this month
+      <div className="mx-3 mb-3 rounded-xl border border-primary/15 bg-primary/[0.045] p-3 backdrop-blur-sm">
+        <p className="text-xs font-semibold tracking-wide text-foreground">
+          Evidence-driven drafting
         </p>
-        <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary transition-all"
-            style={{ width: "25%" }}
-          />
-        </div>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          Strands Agent · Powered by Amazon Bedrock
+        </p>
       </div>
 
       <div className="flex items-center gap-3 border-t px-4 py-3">
@@ -116,8 +126,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   return (
+    <CampaignSearchContext.Provider value={{ searchQuery, setSearchQuery }}>
     <div className="flex min-h-svh w-full bg-background">
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r lg:block">
@@ -145,7 +157,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur-md sm:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border/80 bg-background/85 px-4 shadow-[0_1px_0_oklch(0.5_0.02_274_/_0.04)] backdrop-blur-xl sm:px-6">
           <Button
             variant="ghost"
             size="icon"
@@ -158,7 +170,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <div className="hidden w-full max-w-sm sm:block">
             <InputGroup>
-              <InputGroupInput placeholder="Search prospects, campaigns..." />
+              <InputGroupInput
+                aria-label="Search prospects and campaigns"
+                placeholder="Search prospects, campaigns..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
               <InputGroupAddon>
                 <Search />
               </InputGroupAddon>
@@ -166,6 +183,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell className="size-5" />
             </Button>
@@ -185,5 +203,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
+    </CampaignSearchContext.Provider>
   )
 }

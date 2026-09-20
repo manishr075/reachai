@@ -268,6 +268,42 @@ export const prospects: Prospect[] = [
     reasoning:
       "Atlas's GTM modernization initiative was treated as intent. The email frames automation as a safe, high-leverage first step, matching a traditional buyer's preference for low-risk wins.",
   },
+  {
+    id: "p9",
+    name: "Rahul Sharma",
+    company: "Acme Technologies",
+    role: "VP Sales",
+    email: "rahul.sharma@acme.example",
+    location: "Fictional demo prospect",
+    status: "generated",
+    industry: "B2B SaaS",
+    companyDescription:
+      "Acme Technologies provides workflow automation software for growing businesses.",
+    recentSignal: "The company is expanding its sales organization.",
+    companySummary:
+      "Acme Technologies provides workflow automation software for growing businesses.",
+    opportunity:
+      "The company is expanding its sales organization, creating a timely need for relevant outbound workflows that new sales-team members can review and use.",
+    personalizationAngle:
+      "Reference Acme Technologies' sales-organization expansion and position ReachAI as a way to keep outbound relevant as the team grows.",
+    emailSubject: "Relevant outbound for Acme's growing sales team",
+    emailBody:
+      "Hi Rahul,\n\nI saw that Acme Technologies is expanding its sales organization. As the team grows, keeping outbound relevant without adding more manual research can be a challenge.\n\nReachAI helps sales leaders turn prospect lists into evidence-based, personalized outreach that the team reviews before sending.\n\nWould it be useful to see a short example for Acme?\n\nBest,\nAlex",
+    followUps: [
+      {
+        day: 3,
+        subject: "A quick follow-up for Acme",
+        body: "Hi Rahul — following up on Acme Technologies' sales-team expansion. Would a short example of a reviewable outbound sequence be useful?",
+      },
+      {
+        day: 7,
+        subject: "One idea for Acme's growing sales team",
+        body: "Hi Rahul — ReachAI is designed to help sales leaders keep outreach relevant as teams grow, while keeping every message reviewable before it is sent. Worth a look?",
+      },
+    ],
+    reasoning:
+      "This fictional demo record uses only the supplied company description and sales-organization expansion signal. The outreach avoids unsupported personal or company claims.",
+  },
 ]
 
 export function getProspectContext(company: string) {

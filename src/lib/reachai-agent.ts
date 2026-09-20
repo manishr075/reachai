@@ -1,6 +1,5 @@
 import { Agent, FunctionTool } from "@strands-agents/sdk";
 import { BedrockModel } from "@strands-agents/sdk/models/bedrock";
-import { fromIni } from "@aws-sdk/credential-provider-ini";
 import { getProspectContext } from "@/lib/mock-data";
 
 const systemPrompt = `You are ReachAI, an AI outbound sales assistant.
@@ -33,13 +32,15 @@ const getProspectContextTool = new FunctionTool({
 });
 
 export function createReachAIAgent() {
+  const awsProfile = process.env.AWS_PROFILE ?? "my-bedrock-profile";
+  process.env.AWS_PROFILE ??= awsProfile;
+
   const model = new BedrockModel({
     region: "ap-south-1",
     // Nova Micro in ap-south-1 must be invoked through the active APAC inference profile.
-    modelId: "apac.amazon.nova-micro-v1:0",
+    modelId: process.env.BEDROCK_MODEL_ID ?? "apac.amazon.nova-micro-v1:0",
     maxTokens: 1800,
     temperature: 0.35,
-    clientConfig: { credentials: fromIni({ profile: "my-bedrock-profile" }) },
   });
 
   return new Agent({

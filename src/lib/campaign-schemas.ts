@@ -45,6 +45,12 @@ export const campaignGenerationResultSchema = z.object({
   followups: z.tuple([followUpSchema, followUpSchema]),
 });
 
+const previousCampaignDraftSchema = z.object({
+  subject: z.string().min(1).max(160),
+  emailBody: z.string().min(1).max(2200),
+  followups: z.tuple([followUpSchema, followUpSchema]),
+});
+
 export const campaignSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -63,6 +69,8 @@ export const campaignGenerationRequestSchema = z.object({
   prospect: prospectSchema,
   productDescription: z.string().trim().min(10).max(3000),
   targetCustomer: z.string().trim().min(10).max(1500),
+  regenerationVersion: z.number().int().positive().max(20).optional(),
+  previousDraft: previousCampaignDraftSchema.optional(),
 });
 
 export type ProspectInput = z.infer<typeof prospectSchema>;
